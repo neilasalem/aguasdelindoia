@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formação Multiplica - Águas de Lindóia 2026</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      font-family: Arial, sans-serif;
+      background: transparent;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 10px;
+      font-size: 22px;
+    }
+
+    .galeria {
+      column-count: 4;
+      column-gap: 12px;
+      max-width: 1200px;
+      margin: auto;
+      padding: 10px;
+    }
+
+    .item {
+      break-inside: avoid;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #ddd;
+      transition: transform 0.2s;
+    }
+
+    .item:hover {
+      transform: scale(1.02);
+    }
+
+    .item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* LIGHTBOX */
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .lightbox.ativo {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 95%;
+      max-height: 85vh;
+      border-radius: 10px;
+    }
+
+    .fechar, .anterior, .proximo {
+      position: absolute;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    .fechar {
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .anterior {
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 45px;
+      height: 45px;
+    }
+
+    .proximo {
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 45px;
+      height: 45px;
+    }
+
+    @media (max-width: 900px) {
+      .galeria { column-count: 3; }
+    }
+
+    @media (max-width: 600px) {
+      .galeria { column-count: 2; }
+    }
+
+    @media (max-width: 400px) {
+      .galeria { column-count: 1; }
+    }
+
+  </style>
+</head>
+<body>
+
+<h1>📚 Formação Multiplica – Águas de Lindóia | 1ª Edição 2026</h1>
+
+<div class="galeria" id="galeria"></div>
+
+<div class="lightbox" id="lightbox">
+  <button class="fechar" onclick="fechar()">×</button>
+  <button class="anterior" onclick="anterior()">‹</button>
+  <img id="imgAtual">
+  <button class="proximo" onclick="proxima()">›</button>
+</div>
+
+<script>
+
+const fotos = [
+"https://lh3.googleusercontent.com/d/11YDdlmdhJBjI-njgj30UQ0U0ZYkoE31W",
+"https://lh3.googleusercontent.com/d/151qwPwGBMrJlI6_BViV5EqS_O1jyRAJ7",
+"https://lh3.googleusercontent.com/d/15DEuhyZ_Jj0eX_6IRy-mAtoSsunWiZCq",
+"https://lh3.googleusercontent.com/d/15l9ogBXrecHUdWHaLVzS9CDSx3-oMRta",
+"https://lh3.googleusercontent.com/d/16vsBsABAKO1ZaOHwMkU8uWjMRDC4dCC2",
+"https://lh3.googleusercontent.com/d/18gEtmYhmPA7T2oufsiM-uKl5jHMCg6xd",
+"https://lh3.googleusercontent.com/d/1DrNi8hmEDE-sV9AlWD1jI1HLIvb4Yq8g",
+"https://lh3.googleusercontent.com/d/1F5dOu1lJligAiKn4Ve3Uk544q-gFJFkZ",
+"https://lh3.googleusercontent.com/d/1IbYJzh55oRgfmaSfMX-msnSudBSjbZYn",
+"https://lh3.googleusercontent.com/d/1JHLY-eAnGOuecFSA5WPj7Dge6LzsTL64",
+"https://lh3.googleusercontent.com/d/1K2DCQ-QMmXuUdLt0FPwsFF64VX9MNgwh",
+"https://lh3.googleusercontent.com/d/1Q-Re-_iDt3Gm7vjO97qEIpWEacr50pCc",
+"https://lh3.googleusercontent.com/d/1fXBBv-NccJHR4aAUzIw5ovJr9ujXhy-y",
+"https://lh3.googleusercontent.com/d/1jbqy2yaRsLoNwhXkao5g1IeXAWBPhQuC",
+"https://lh3.googleusercontent.com/d/1l744OejAkTMfVjFU-a6Bf1Rb1Z7kmIFb",
+"https://lh3.googleusercontent.com/d/1lnPZ8yajaZ3BGvACgkRwPvD2aVHidU6I",
+"https://lh3.googleusercontent.com/d/1rxwS5pD0bo65PTeC4EN1XXmyhrlQq2Kg",
+"https://lh3.googleusercontent.com/d/1v52qkYwQubI8yVtJZOouj-AoWatFsg-z",
+"https://lh3.googleusercontent.com/d/1vFpNvcT0cVX9F25MEnIlWrLtSd6x6ivS",
+"https://lh3.googleusercontent.com/d/1wmKzjVn5ydI0N3sQz_sZCm8ynZYMpRrr",
+"https://lh3.googleusercontent.com/d/1z4-wL-iKG2yKYfv0ceQru58dfzUdGjed"
+];
+
+const galeria = document.getElementById("galeria");
+const lightbox = document.getElementById("lightbox");
+const imgAtual = document.getElementById("imgAtual");
+
+let index = 0;
+
+function render() {
+  galeria.innerHTML = fotos.map((f, i) => `
+    <div class="item" onclick="abrir(${i})">
+      <img src="${f}" loading="lazy">
+    </div>
+  `).join("");
+}
+
+function abrir(i) {
+  index = i;
+  imgAtual.src = fotos[index];
+  lightbox.classList.add("ativo");
+}
+
+function fechar() {
+  lightbox.classList.remove("ativo");
+}
+
+function proxima() {
+  index = (index + 1) % fotos.length;
+  imgAtual.src = fotos[index];
+}
+
+function anterior() {
+  index = (index - 1 + fotos.length) % fotos.length;
+  imgAtual.src = fotos[index];
+}
+
+document.addEventListener("keydown", (e) => {
+  if (!lightbox.classList.contains("ativo")) return;
+  if (e.key === "Escape") fechar();
+  if (e.key === "ArrowRight") proxima();
+  if (e.key === "ArrowLeft") anterior();
+});
+
+render();
+
+</script>
+
+</body>
+</html>
